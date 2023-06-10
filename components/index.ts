@@ -5,5 +5,17 @@ import Footer from './Footer'
 import SearchBar from './SearchBar'
 import CustomFilter from './CustomFilter'
 import SearchManu from './SearchManu'
+import CarCard from './CarCard'
+import CarDetails from './CarDetails'
 
-export { Hero, CustomButton, NavBar, Footer, SearchBar, CustomFilter, SearchManu }
+export {
+  Hero,
+  CustomButton,
+  NavBar,
+  Footer,
+  SearchBar,
+  CustomFilter,
+  SearchManu,
+  CarCard,
+  CarDetails,
+}
