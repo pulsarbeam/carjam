@@ -29,3 +29,31 @@ export interface CarProps {
   transmission: string
   year: number
 }
+
+export interface FilterProps {
+  manu: string
+  model: string
+  year: number
+  fuel: string
+  limit: number
+}
+
+export interface OptionProps {
+  title: string
+  value: string
+}
+export interface FilteredCarsProps<T> {
+  options: OptionProps[]
+  setFilter: (selected: T) => void
+}
+
+export interface ShowMoreProps {
+  pageNumber: number
+  isNext: boolean
+  setLimit: (limit: number) => void
+}
+
+export interface SearchManuFacturerProps {
+  manufacturer: string
+  setManuFacturer: (manufacturer: string) => void
+}

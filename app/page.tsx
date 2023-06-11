@@ -1,10 +1,48 @@
-import { Hero, CustomFilter, SearchBar, CarCard } from '@/components'
+'use client'
+
+import { useState, useEffect } from 'react'
+import { Hero, CustomFilter, SearchBar, CarCard, ShowMore } from '@/components'
+import { fuels, yearsOfProduction } from '@/constants'
 import { fetchCars } from '@/utils'
 import Image from 'next/image'
 
-export default async function Home() {
-  const allCars = await fetchCars()
-  console.log(allCars)
+export default function Home() {
+  const [allCars, setAllCars] = useState([])
+  const [loading, setLoading] = useState(false)
+
+  //Search states
+  const [manu, setManu] = useState('')
+  const [model, setModel] = useState('')
+
+  //Filter states
+
+  const [fuel, setFuel] = useState('')
+  const [year, setYear] = useState(2022)
+
+  const [limit, setLimit] = useState(10)
+
+  const getCars = async () => {
+    setLoading(true)
+    try {
+      const result = await fetchCars({
+        manu: manu || '',
+        model: model || '',
+        year: year || 2022,
+        fuel: fuel || '',
+        limit: limit || 10,
+      })
+      setAllCars(result)
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    getCars()
+  }, [fuel, year, limit, manu, model])
+
   const isDataEmpty = !Array.isArray(allCars) || allCars.length < 1 || !allCars
 
   return (
@@ -16,20 +54,40 @@ export default async function Home() {
           <p>Explore cars you may like!</p>
         </div>
         <div className="home__filters">
-          <SearchBar />
-          <div className="home__filter-contianer">
-            <CustomFilter title="fuel" />
-            <CustomFilter title="year" />
+          <SearchBar setManu={setManu} setModel={setModel} />
+          <div className="home__filter-container">
+            <CustomFilter title="fuel" options={fuels} setFilter={setFuel} />
+            <CustomFilter
+              title="year"
+              options={yearsOfProduction}
+              setFilter={setYear}
+            />
           </div>
         </div>
 
-        {!isDataEmpty ? (
+        {allCars.length > 0 ? (
           <section>
             <div className="home__cars-wrapper">
               {allCars?.map((car) => (
                 <CarCard car={car} />
               ))}
             </div>
+            {loading && (
+              <div className="mt-16 w-full flex-center">
+                <Image
+                  src="/loading.svg"
+                  width={50}
+                  height={50}
+                  alt="loader"
+                  className="obeject-contain"
+                />
+              </div>
+            )}
+            <ShowMore
+              pageNumber={limit / 10}
+              isNext={limit > allCars.length}
+              setLimit={setLimit}
+            />
           </section>
         ) : (
           <div className="home__error-container">
